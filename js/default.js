@@ -21,10 +21,10 @@ function readSTLs(filename) {
                         newMeshReady = true;
                     }
                 }
-            }
+            };
             xhr.onerror = function (e) {
                 console.log(e);
-            }
+            };
             xhr.open("GET", filename, true);
             xhr.responseType = "arraybuffer";
             xhr.send(null);
