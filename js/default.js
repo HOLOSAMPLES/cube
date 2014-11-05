@@ -42,7 +42,7 @@ function LEIA_setBackgroundPlane(filename, aspect){
 		LEIA_backgroundPlaneGeometry = new THREE.PlaneGeometry(30*aspect, 30, 10, 10);
 	}
 	LEIA_backgroundPlane = new THREE.Mesh(LEIA_backgroundPlaneGeometry, LEIA_backgroundPlaneMaterial);
-	LEIA_backgroundPlane.position.z = -6;
+	LEIA_backgroundPlane.position.z = -2;
 	scene.add(LEIA_backgroundPlane);
 }
 
