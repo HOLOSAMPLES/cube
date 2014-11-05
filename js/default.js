@@ -1,8 +1,34 @@
  var windowWidth = window.innerWidth, windowHeight = window.innerHeight;
  var camera,renderer,scene;
  Init();
+ LEIA_setBackgroundPlane('resource/vanishingpt5.png');
+ LEIA_setCenterPlane('resource/oval2.png');
+ readSTLs('resource/cubes.stl');
  animate();
 
+function readSTLs(filename) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200 || xhr.status == 0) {
+                        var rep = xhr.response; // || xhr.mozResponseArrayBuffer;
+                        mesh1 = parseStlBinary(rep);
+                        mesh1.scale.set(sizeMesh1, sizeMesh1, sizeMesh1);
+                        mesh1.rotation.x = Math.PI / 8 * -1;
+                        mesh1.position.z = 4;
+                        scene.add(mesh1);
+
+                        newMeshReady = true;
+                    }
+                }
+            }
+            xhr.onerror = function (e) {
+                console.log(e);
+            }
+            xhr.open("GET", filename, true);
+            xhr.responseType = "arraybuffer";
+            xhr.send(null);
+        }
 function Init(){
         scene = new THREE.Scene();
   
