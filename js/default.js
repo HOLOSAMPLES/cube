@@ -1,40 +1,42 @@
  var windowWidth = window.innerWidth, windowHeight = window.innerHeight;
  var camera,renderer,scene;
+ var mesh1;
+ var newMeshReady = false;
+ var sizeMesh1 = 20;
+
  Init();
-
-
  animate();
 
 function readSTLs(filename) {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200 || xhr.status == 0) {
-                        var rep = xhr.response; // || xhr.mozResponseArrayBuffer;
-                        mesh1 = parseStlBinary(rep);
-                        mesh1.scale.set(sizeMesh1, sizeMesh1, sizeMesh1);
-                        mesh1.rotation.x = Math.PI / 8 * -1;
-                        mesh1.position.z = 4;
-                        scene.add(mesh1);
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200 || xhr.status == 0) {
+        var rep = xhr.response; // || xhr.mozResponseArrayBuffer;
+        mesh1 = parseStlBinary(rep);
+        mesh1.scale.set(sizeMesh1, sizeMesh1, sizeMesh1);
+        mesh1.rotation.x = Math.PI / 8 * -1;
+        mesh1.position.z = 4;
+        scene.add(mesh1);
 
-                        newMeshReady = true;
-                    }
-                }
-            };
-            xhr.onerror = function (e) {
-                console.log(e);
-            };
-            xhr.open("GET", filename, true);
-            xhr.responseType = "arraybuffer";
-            xhr.send(null);
-        }
+        newMeshReady = true;
+      }
+    }
+  };
+  xhr.onerror = function (e) {
+    console.log(e);
+  };
+  xhr.open("GET", filename, true);
+  xhr.responseType = "arraybuffer";
+  xhr.send(null);
+}
 function LEIA_setBackgroundPlane(filename, aspect){
 	var LEIA_backgroundPlaneTexture = new THREE.ImageUtils.loadTexture( filename );
 	LEIA_backgroundPlaneTexture.wrapS = LEIA_backgroundPlaneTexture.wrapT = THREE.RepeatWrapping; 
 	LEIA_backgroundPlaneTexture.repeat.set( 1, 1 );
 	var LEIA_backgroundPlaneMaterial = new THREE.MeshLambertMaterial( { map: LEIA_backgroundPlaneTexture, side: THREE.DoubleSide } );
 	var LEIA_backgroundPlaneGeometry;
-	if (aspect == undefined) {
+	if (aspect === undefined) {
 		LEIA_backgroundPlaneGeometry = new THREE.PlaneGeometry(40, 30, 10, 10);
 	} else {
 		LEIA_backgroundPlaneGeometry = new THREE.PlaneGeometry(30*aspect, 30, 10, 10);
@@ -50,7 +52,7 @@ function LEIA_setCenterPlane(filename, aspect){
 	LEIA_centerPlaneTexture.repeat.set( 1, 1 );
 	var LEIA_centerPlaneMaterial = new THREE.MeshPhongMaterial( { map: LEIA_centerPlaneTexture, transparent:true, side: THREE.DoubleSide } );
 	var LEIA_centerPlaneGeometry;
-	if (aspect == undefined) {
+	if (aspect === undefined) {
 		LEIA_centerPlaneGeometry = new THREE.PlaneGeometry(40, 30, 10, 10);
 	} else {
 		LEIA_centerPlaneGeometry = new THREE.PlaneGeometry(10*aspect, 30, 10, 10);
@@ -81,11 +83,9 @@ function Init(){
  		document.body.appendChild( renderer.domElement );
   
        //add object to Scene
-   LEIA_setBackgroundPlane('resource/vanishingpt5.png');
-   LEIA_setCenterPlane('resource/oval2.png');
-   readSTLs('resource/cubes.stl');
-    //  var graph = new THREE.Mesh(new THREE.SphereGeometry(8, 30, 10), new THREE.MeshLambertMaterial({color:0xffffff}));
-	//  scene.add(graph);
+       LEIA_setBackgroundPlane('resource/vanishingpt5.png');
+       LEIA_setCenterPlane('resource/oval2.png');
+       readSTLs('resource/cubes.stl');
   
         //add Light
  		var xl = new THREE.DirectionalLight( 0x555555 );
@@ -101,7 +101,10 @@ function Init(){
  function animate() 
  {
  	requestAnimationFrame( animate );
-  
+    if (newMeshReady) {
+               
+       mesh1.rotation.y = 1.032 * Date.now() * 0.001;
+    }
     renderer.setClearColor(new THREE.Color().setRGB(1.0, 1.0, 1.0)); 
 	renderer.Leia_render(scene, camera,undefined,undefined,_holoScreenScale,_camFov,_messageFlag);
  }
