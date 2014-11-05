@@ -1,9 +1,8 @@
  var windowWidth = window.innerWidth, windowHeight = window.innerHeight;
  var camera,renderer,scene;
  Init();
- LEIA_setBackgroundPlane('resource/vanishingpt5.png');
- LEIA_setCenterPlane('resource/oval2.png');
- readSTLs('resource/cubes.stl');
+
+
  animate();
 
 function readSTLs(filename) {
@@ -29,6 +28,39 @@ function readSTLs(filename) {
             xhr.responseType = "arraybuffer";
             xhr.send(null);
         }
+function LEIA_setBackgroundPlane(filename, aspect){
+	var LEIA_backgroundPlaneTexture = new THREE.ImageUtils.loadTexture( filename );
+	LEIA_backgroundPlaneTexture.wrapS = LEIA_backgroundPlaneTexture.wrapT = THREE.RepeatWrapping; 
+	LEIA_backgroundPlaneTexture.repeat.set( 1, 1 );
+	var LEIA_backgroundPlaneMaterial = new THREE.MeshLambertMaterial( { map: LEIA_backgroundPlaneTexture, side: THREE.DoubleSide } );
+	var LEIA_backgroundPlaneGeometry;
+	if (aspect == undefined) {
+		LEIA_backgroundPlaneGeometry = new THREE.PlaneGeometry(40, 30, 10, 10);
+	} else {
+		LEIA_backgroundPlaneGeometry = new THREE.PlaneGeometry(30*aspect, 30, 10, 10);
+	}
+	LEIA_backgroundPlane = new THREE.Mesh(LEIA_backgroundPlaneGeometry, LEIA_backgroundPlaneMaterial);
+	LEIA_backgroundPlane.position.z = -6;
+	scene.add(LEIA_backgroundPlane);
+}
+
+function LEIA_setCenterPlane(filename, aspect){
+	var LEIA_centerPlaneTexture = new THREE.ImageUtils.loadTexture( filename );
+	LEIA_centerPlaneTexture.wrapS = LEIA_centerPlaneTexture.wrapT = THREE.RepeatWrapping; 
+	LEIA_centerPlaneTexture.repeat.set( 1, 1 );
+	var LEIA_centerPlaneMaterial = new THREE.MeshPhongMaterial( { map: LEIA_centerPlaneTexture, transparent:true, side: THREE.DoubleSide } );
+	var LEIA_centerPlaneGeometry;
+	if (aspect == undefined) {
+		LEIA_centerPlaneGeometry = new THREE.PlaneGeometry(40, 30, 10, 10);
+	} else {
+		LEIA_centerPlaneGeometry = new THREE.PlaneGeometry(10*aspect, 30, 10, 10);
+	}
+	LEIA_centerPlane = new THREE.Mesh(LEIA_centerPlaneGeometry, LEIA_centerPlaneMaterial);
+	LEIA_centerPlane.position.x = 0;
+	LEIA_centerPlane.position.y = 0;
+	LEIA_centerPlane.position.z = 0;
+	scene.add(LEIA_centerPlane);
+}
 function Init(){
         scene = new THREE.Scene();
   
@@ -49,8 +81,11 @@ function Init(){
  		document.body.appendChild( renderer.domElement );
   
        //add object to Scene
-      var graph = new THREE.Mesh(new THREE.SphereGeometry(8, 30, 10), new THREE.MeshLambertMaterial({color:0xffffff}));
-	  scene.add(graph);
+   LEIA_setBackgroundPlane('resource/vanishingpt5.png');
+   LEIA_setCenterPlane('resource/oval2.png');
+   readSTLs('resource/cubes.stl');
+    //  var graph = new THREE.Mesh(new THREE.SphereGeometry(8, 30, 10), new THREE.MeshLambertMaterial({color:0xffffff}));
+	//  scene.add(graph);
   
         //add Light
  		var xl = new THREE.DirectionalLight( 0x555555 );
